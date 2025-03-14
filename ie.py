@@ -1,5 +1,6 @@
 import os
 import cv2
+import argparse
 import numpy as np
 from scipy.ndimage import label
 import multiprocessing
@@ -8,7 +9,7 @@ import multiprocessing
 cv2.setUseOptimized(True)
 cv2.setNumThreads(multiprocessing.cpu_count())
 
-def load_images(images_path: str):
+def load_images(images_path: str) -> list[str]:
     """Load paths of supported images from a directory."""
     supported_formats = ['.jpg', '.jpeg', '.png']
     return [
@@ -17,20 +18,24 @@ def load_images(images_path: str):
         if os.path.splitext(filename)[1].lower() in supported_formats
     ]
 
-def preprocess_image(image_path: str):
+def preprocess_image(image_path: str) -> tuple[np.ndarray, np.ndarray]:
     """Preprocess an image by converting to grayscale, reducing noise, and applying threshold."""
     cv2_image = cv2.imread(image_path)
+    if cv2_image is None:
+        raise ValueError(f"Failed to read images from: {image_path}")
+
     grayscale_image = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2GRAY)
     noise_reduced_image = cv2.fastNlMeansDenoising(grayscale_image)
     _, threshold_image = cv2.threshold(noise_reduced_image, 200, 255, cv2.THRESH_BINARY_INV)
     return cv2_image, threshold_image
 
-def extract_components(threshold_image):
+def extract_components(threshold_image: np.ndarray) -> tuple[np.ndarray, int]:
     """Find connected components in a threshold image."""
     labeled, num_features = label(threshold_image)
     return labeled, num_features
 
-def save_cropped_components(cv2_image, labeled, num_features, output_location, image_path, padding=10):
+def save_cropped_components(cv2_image: np.ndarray, labeled: np.ndarray, num_features: int, output_location: str,
+                            image_path: str, padding: int = 10) -> int:
     """Save cropped components as separate images."""
     image_height, image_width = cv2_image.shape[:2]
     min_width = image_width * 0.1
@@ -59,7 +64,7 @@ def save_cropped_components(cv2_image, labeled, num_features, output_location, i
 
     return extracted_count
 
-def process_image(image_path, output_location):
+def process_image(image_path: str, output_location: str) -> int:
     try:
         print(f'Extracting from image: {image_path}')
         cv2_image, threshold_image = preprocess_image(image_path)
@@ -70,23 +75,23 @@ def process_image(image_path, output_location):
         print(f"Error processing {image_path}: {e}")
         return 0
 
-def extract_images_parallel(images_path_list, output_location, num_processes):
+def extract_images_parallel(images_path_list: list[str], output_location: str, num_processes: int) -> int:
     with multiprocessing.Pool(processes=num_processes) as pool:
         extracted_counts = pool.starmap(process_image, [(image_path, output_location) for image_path in images_path_list])
     return sum(extracted_counts)
 
-def extract_images(images_path: str):
+def extract_images(images_path: str) -> dict:
     """Extract components from images in a directory."""
     result = {
         'source_images': 0,
         'extracted_images': 0,
     }
 
-    if os.path.exists(images_path) and os.path.isdir(images_path):
-        images_path_list = load_images(images_path)
-    else:
+    if not os.path.exists(images_path) or not os.path.isdir(images_path):
+        print(f"Invalid directory: {images_path}")
         return result
 
+    images_path_list = load_images(images_path)
     if len(images_path_list) == 0:
         return result
     else:
@@ -105,25 +110,24 @@ def extract_images(images_path: str):
     return result
 
 def main():
-    scans_path = input('''
-Welcome to ImageComponentExtractor.
-Please write/paste the full path to the directory where the images are located and hit enter.
-(supported formats: .jpg, .jpeg and .png)
-Directory Path: ''')
+    parser = argparse.ArgumentParser(description='''Extract components from images in a directory.
+    Required argument: -id <image_directory_full_path>''')
 
-    while not os.path.exists(scans_path):
-        scans_path = input('''
-Invalid path. Please enter the full path to the directory where the images are located.
-Directory Path: ''')
+    parser.add_argument('-id', required=True, metavar='IMAGES_DIRECTORY', type=str,
+                        help='Directory containing images. Example: /path/to/images')
 
-    result = extract_images(scans_path)
+    args = parser.parse_args()
+
+    result = extract_images(args.id)
 
     if result['source_images'] == 0:
         print('\nNo images found.\nCheck the directory and try again.\n')
-        exit(0)
+        exit(1)
 
-    print(f'\nProcessing concluded. {result["extracted_images"]} images extracted from {result["source_images"]} images processed.\n')
-    print(f'Extracted images were saved to: {os.path.join(scans_path, "extracted_images", "")}')
+    print(f'\nProcessing concluded. {result["extracted_images"]} '
+          f'images extracted from {result["source_images"]} images processed.\n')
+    print(f'Extracted images were saved to: {os.path.join(args.id, "extracted_images", "")}')
+
 
 if __name__ == '__main__':
     main()
