@@ -19,7 +19,9 @@ Image Extractor is a CLI tool that takes a collection of scanned images, each co
 
 Input (scanned image containing multiple individual images):
 
-<img src="https://github.com/user-attachments/assets/27c7fd9b-93c8-4311-87fe-082dfe64d178" margin=auto width=30%>
+<p align="center">
+   <img src="https://github.com/user-attachments/assets/27c7fd9b-93c8-4311-87fe-082dfe64d178" width=30%>
+</p>
 
 Output (individual cropped images):
 
@@ -33,8 +35,7 @@ Output (individual cropped images):
    ```
    git clone https://github.com/2009miles/ie.git
    ```
-2. Install the required dependencies:
-   (in the corresponding directory)
+2. Install the required dependencies (in the corresponding directory):
    ```
    pip install -r requirements.txt
    ```
@@ -43,10 +44,9 @@ Output (individual cropped images):
 
 1. Run the python script:
     ```
-    python ie.py
+    python ie.py -id /absolute/path/to/input/folder
     ```
-2. Follow the directions in the CLI.
-3. Wait for processing.
-4. In the folder where your original images were, you'll find a new folder with the cropped pictures.
+2. Wait for processing.
+3. Find a new folder with the cropped pictures in "/absolute/path/to/input/folder/extracted_images".
 
 **Disclaimer**: *some crops may be off, work in progress*
