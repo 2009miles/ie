@@ -1,6 +1,6 @@
-# Image Extractor
+# Image Extractor (ie)
 
-ImageExtractor is a CLI tool that takes a collection of scanned images, each containing multiple individual images, and automatically crops and extracts individual images into a new folder.
+Image Extractor is a CLI tool that takes a collection of scanned images, each containing multiple individual images, and automatically crops and extracts individual images into a new folder.
 
 ## Features
 
@@ -19,23 +19,23 @@ ImageExtractor is a CLI tool that takes a collection of scanned images, each con
 
 Input (scanned image containing multiple individual images):
 
-!
+<img src="https://github.com/user-attachments/assets/27c7fd9b-93c8-4311-87fe-082dfe64d178" margin=auto width=30%>
 
 Output (individual cropped images):
 
-| Image 1 | Image 2 | Image 3 |
-| ------- | ------- | ------- |
-| ! | ! | ! |
+| Image 1 | Image 2 | Image 3 | Image 4 |
+| ------- | ------- | ------- | ------- |
+| ![Scan21082024173106_001_cropped_area_1](https://github.com/user-attachments/assets/72bb975b-227b-4b0c-84d5-4393d90bd941) | ![Scan21082024173106_001_cropped_area_43](https://github.com/user-attachments/assets/1f12e801-0b18-4d85-816a-bba5979a125c) | ![Scan21082024173106_001_cropped_area_179](https://github.com/user-attachments/assets/f967c2e2-3f9a-4d02-b138-210d7e04f8a2) | ![Scan21082024173106_001_cropped_area_180](https://github.com/user-attachments/assets/a0e5e630-da25-4e48-9e4b-4653d1f1ccb6) |
 
 ## Installation
 
 1. Clone the repository:
    ```
-   git clone https://github.com/2009miles/ie.py
+   git clone https://github.com/2009miles/ie.git
    ```
 2. Install the required dependencies:
+   (in the corresponding directory)
    ```
-   cd image_extractor
    pip install -r requirements.txt
    ```
 
@@ -45,6 +45,8 @@ Output (individual cropped images):
     ```
     python ie.py
     ```
-2. Follow the directions in the CLI and it *should* work.
+2. Follow the directions in the CLI.
+3. Wait for processing.
+4. In the folder where your original images were, you'll find a new folder with the cropped pictures.
 
-**Disclaimer**: *some crops may be slightly off, work in progress*
+**Disclaimer**: *some crops may be off, work in progress*
