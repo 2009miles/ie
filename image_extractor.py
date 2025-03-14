@@ -51,8 +51,6 @@ def save_cropped_components(cv2_image, labeled, num_features, output_location, i
         cropped_region = cv2_image[max(0, y_min - padding):min(image_height, y_max + padding + 1),
                          max(0, x_min - padding):min(image_width, x_max + padding + 1)]
 
-        cropped_region = cv2.rotate(cropped_region, cv2.ROTATE_90_CLOCKWISE)
-
         cv2.imwrite(
             f"{output_location}/{os.path.splitext(os.path.basename(image_path))[0]}_cropped_area_{component}.png",
             cropped_region
