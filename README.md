@@ -19,7 +19,9 @@ Image Extractor is a CLI tool that takes a collection of scanned images, each co
 
 Input (scanned image containing multiple individual images):
 
-<img src="https://github.com/user-attachments/assets/27c7fd9b-93c8-4311-87fe-082dfe64d178" margin=auto width=30%>
+<p align="center">
+   <img src="https://github.com/user-attachments/assets/27c7fd9b-93c8-4311-87fe-082dfe64d178" width=30%>
+</p>
 
 Output (individual cropped images):
 
