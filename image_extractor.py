@@ -2,6 +2,11 @@ import os
 import cv2
 import numpy as np
 from scipy.ndimage import label
+import multiprocessing
+
+# Enable optimized OpenCV functions
+cv2.setUseOptimized(True)
+cv2.setNumThreads(multiprocessing.cpu_count())
 
 def load_images(images_path: str):
     """Load paths of supported images from a directory."""
@@ -56,6 +61,22 @@ def save_cropped_components(cv2_image, labeled, num_features, output_location, i
 
     return extracted_count
 
+def process_image(image_path, output_location):
+    try:
+        print(f'Extracting from image: {image_path}')
+        cv2_image, threshold_image = preprocess_image(image_path)
+        labeled, num_features = extract_components(threshold_image)
+        extracted_count = save_cropped_components(cv2_image, labeled, num_features, output_location, image_path)
+        return extracted_count
+    except Exception as e:
+        print(f"Error processing {image_path}: {e}")
+        return 0
+
+def extract_images_parallel(images_path_list, output_location, num_processes):
+    with multiprocessing.Pool(processes=num_processes) as pool:
+        extracted_counts = pool.starmap(process_image, [(image_path, output_location) for image_path in images_path_list])
+    return sum(extracted_counts)
+
 def extract_images(images_path: str):
     """Extract components from images in a directory."""
     result = {
@@ -79,15 +100,9 @@ def extract_images(images_path: str):
     if not os.path.exists(output_location):
         os.makedirs(output_location)
 
-    for image_path in images_path_list:
-        try:
-            print(f'Extracting from image: {image_path}')
-            cv2_image, threshold_image = preprocess_image(image_path)
-            labeled, num_features = extract_components(threshold_image)
-            extracted_count = save_cropped_components(cv2_image, labeled, num_features, output_location, image_path)
-            result['extracted_images'] += extracted_count
-        except Exception as e:
-            print(f"Error processing {image_path}: {e}")
+    num_processors = multiprocessing.cpu_count()
+    extracted_count = extract_images_parallel(images_path_list, output_location, num_processors)
+    result['extracted_images'] = extracted_count
 
     return result
 
