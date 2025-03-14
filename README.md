@@ -35,8 +35,7 @@ Output (individual cropped images):
    ```
    git clone https://github.com/2009miles/ie.git
    ```
-2. Install the required dependencies:
-   (in the corresponding directory)
+2. Install the required dependencies (in the corresponding directory):
    ```
    pip install -r requirements.txt
    ```
@@ -45,10 +44,9 @@ Output (individual cropped images):
 
 1. Run the python script:
     ```
-    python ie.py
+    python ie.py -id /absolute/path/to/input/folder
     ```
-2. Follow the directions in the CLI.
-3. Wait for processing.
-4. In the folder where your original images were, you'll find a new folder with the cropped pictures.
+2. Wait for processing.
+3. Find a new folder with the cropped pictures in "/absolute/path/to/input/folder/extracted_images".
 
 **Disclaimer**: *some crops may be off, work in progress*
