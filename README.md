@@ -12,8 +12,8 @@ Image Extractor is a CLI tool that takes a collection of scanned images, each co
 ## Usage
 
 1. Place your scanned images (e.g., JPEG, JPG, PNG) in directory of your choice.
-2. Run the ie tool and follow the prompts (providing the input folder path).
-3. The tool will create a new output folder, in the same directory, with the individual cropped images.
+2. Run the ie script, providing the path to the directory as an argument after the flag -id.
+3. The tool will create a new output folder, in the same directory, containing the individual cropped images.
 
 ## Example
 
